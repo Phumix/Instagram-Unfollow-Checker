@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Instagram Unfollow Checker</title>
+	<style>
+	       body {
+	       	font-family: Arial, sans-serif;
+	       	background-color: #f4f4f4;
+	       	margin: 0;
+	       	padding: 0;
+	       	display: flex;
+	       	flex-direction: column;
+	       	align-items: center;
+	       	justify-content: center;
+	       	height: 100vh;
+	       }
+	       h1 {
+	       	text-align: center;
+	       }
+	       .upload-container {
+	       	text-align: center;
+	       	margin-bottom: 20px;
+	       }
+	       label {
+	       	display: block;
+	       	margin: 5px 0;
+	       }
+	       input[type="file"] {
+	       	display: block;
+	       	margin: 5px auto;
+	       }
+	       button {
+	       	display: inline-block;
+	       	margin: 10px 5px;
+	       	padding: 10px;
+	       	background-color: #4CAF50;
+	       	color: white;
+	       	border: none;
+	       	cursor: pointer;
+	       }
+	       button:hover {
+	       	background-color: #45a049;
+	       }
+	       #info-button {
+	       	display: inline-block;
+	       	margin-left: 10px;
+	       }
+	       .modal {
+	       	display: none;
+	       	position: fixed;
+	       	top: 0;
+	       	left: 0;
+	       	width: 100%;
+	       	height: 100%;
+	       	background-color: rgba(0, 0, 0, 0.7);
+	       	z-index: 1;
+	       }
+	       .modal-content {
+	       	background-color: #fff;
+	       	position: absolute;
+	       	top: 50%;
+	       	left: 50%;
+	       	transform: translate(-50%, -50%);
+	       	padding: 20px;
+	       	text-align: left;
+	       	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+	       }
+	       .close {
+	       	position: absolute;
+	       	top: 10px;
+	       	right: 10px;
+	       	font-size: 20px;
+	       	cursor: pointer;
+	       }
+	       #result-container {
+	       	margin-top: 20px;
+	       	text-align: center;
+	       	max-height: 300px;
+	       	overflow-y: auto;
+	       }
+	       #result {
+	       	text-align: left;
+	       }
+	       ul {
+	       	list-style-type: none;
+	       	padding: 0;
+	       }
+	       li {
+	       	margin: 5px 0;
+	       }
+	       a {
+	       	color: #007BFF;
+	       	text-decoration: none;
+	       }
+	       #result-message {
+	       	font-weight: bold;
+	       	margin-bottom: 10px;
+	       }
+	       #footer {
+	       	margin-top: 20px;
+	       	text-align: center;
+	       }
+	       #footer a {
+	       	color: #007BFF;
+	       	text-decoration: none;
+	       }
+	</style>
+</head>
+<body>
+	<h1>Instagram Unfollow Checker</h1>
+	<div class="upload-container">
+		<label for="followingFile">Upload Following JSON:</label> <input accept=".json" id="followingFile" type="file"><br>
+		<br>
+		<label for="followersFile">Upload Followers JSON:</label> <input accept=".json" id="followersFile" type="file"><br>
+		<br>
+		<button onclick="checkFollowers()">Check</button> <button id="info-button" onclick="showInfo()">?</button>
+	</div>
+	<div id="result-container">
+		<p id="result-message"></p>
+		<div id="result"></div>
+	</div>
+	<div id="footer">
+		<p>Created by Phumix, this project is <a href="https://github.com/Phumix/Instagram-Unfollow-Checker" target="_blank">open source on GitHub</a>.</p>
+	</div>
+	
+<div id="info-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeInfo()">&times;</span>
+        <h2>Instagram Unfollow Checker</h2>
+        <p>This tool helps you find out who is not following you back on Instagram. To use this tool, you need to download your data archive as JSON from Instagram. To get the required JSON data, follow these steps:</p>
+        <ol>
+            <li>Log in to your Instagram account on a computer.</li>
+            <li>Download your Instagram data by following this guide: <a href="https://help.instagram.com/181231772500920" target="_blank">Download Instagram Data</a>. <small>(This usually takes up to 15 minutes, but sometimes up to 30 days.)</small></li>
+            <li>Unzip the downloaded data and navigate to the "followers_and_following" folder.</li>
+            <li>Locate the "following.json" and "followers_1.json" files.</li>
+        </ol>
+        <p>Upload your JSON data files, click "Check," and we'll show you a list of users who are not following you back.</p>
+		<small>This tool may only be compatible with desktop/mac as you need to download data, unzip and upload again.</small>
+    </div>
+</div>
+
+
+
+	<script>
+		function checkFollowers() {
+			const followingFileInput = document.getElementById('followingFile');
+			const followersFileInput = document.getElementById('followersFile');
+
+			const followingFile = followingFileInput.files[0];
+			const followersFile = followersFileInput.files[0];
+
+			if (!followingFile || !followersFile) {
+				displayError('Please upload both JSON files.');
+				return;
+			}
+
+			const reader = new FileReader();
+
+			reader.onload = function() {
+				try {
+					const followingData = JSON.parse(reader.result);
+
+					if (!followingData || !followingData.relationships_following) {
+						throw new Error('Invalid JSON structure for following.json. Make sure it is the correct file from your Instagram Data Collection.');
+					}
+
+					const reader2 = new FileReader();
+					reader2.onload = function() {
+						try {
+							const followersData = JSON.parse(reader2.result);
+
+							if (!Array.isArray(followersData)) {
+								throw new Error('Invalid JSON structure for followers.json. Make sure it is the correct file from your Instagram Data Collection.');
+							}
+
+							const followingHrefs = followingData.relationships_following.map(item => item.string_list_data[0].href);
+							const followersHrefs = followersData.map(item => item.string_list_data[0].href);
+
+							const notFollowingBack = followingHrefs.filter(href => !followersHrefs.includes(href));
+
+							const resultMessage = document.getElementById('result-message');
+							if (resultMessage) {
+								resultMessage.textContent = `A total of ${notFollowingBack.length} is not following you back:`;
+								resultMessage.style.display = 'block';
+							}
+
+							displayResults(notFollowingBack);
+						} catch (error) {
+							displayError(error.message);
+						}
+					};
+					reader2.readAsText(followersFile);
+				} catch (error) {
+					displayError(error.message);
+				}
+			};
+			reader.readAsText(followingFile);
+		}
+
+		function displayError(message) {
+			const resultDiv = document.getElementById('result');
+			resultDiv.innerHTML = '';
+			const errorMessage = document.createElement('p');
+			errorMessage.textContent = message;
+			resultDiv.appendChild(errorMessage);
+		}
+
+		function displayResults(users) {
+			const resultDiv = document.getElementById('result');
+			resultDiv.innerHTML = '';
+
+			if (users.length === 0) {
+				const message = document.createElement('p');
+				message.textContent = 'Everyone is following you back.';
+				resultDiv.appendChild(message);
+			} else {
+				const ul = document.createElement('ul');
+				users.forEach(user => {
+					const username = user.replace('https://www.instagram.com/', '');
+					const li = document.createElement('li');
+					const a = document.createElement('a');
+					a.href = user;
+					a.textContent = username;
+					li.appendChild(a);
+					ul.appendChild(li);
+				});
+				resultDiv.appendChild(ul);
+			}
+		}
+
+		function showInfo() {
+			const modal = document.getElementById('info-modal');
+			modal.style.display = 'block';
+		}
+
+		function closeInfo() {
+			const modal = document.getElementById('info-modal');
+			modal.style.display = 'none';
+		}
+
+		window.onclick = function(event) {
+			const modal = document.getElementById('info-modal');
+			if (event.target === modal) {
+				modal.style.display = 'none';
+			}
+		}
+	</script>
+</body>
+</html>

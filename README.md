@@ -16,3 +16,6 @@ A browser-based tool that helps you see who is not following you back on Instagr
 
 ## Live demo
 https://phumix.com/tools/Instagram-Follower-Comparison/
+
+## License
+MIT License — see [LICENSE](./LICENSE) for details.

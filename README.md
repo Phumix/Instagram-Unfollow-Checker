@@ -1,22 +1,18 @@
-# Instagram-Unfollow-Checker
-A simple tool to compare your Instagram followers and following lists using your own downloaded data archive, and find out who unfollowed you.
+# Instagram Follower Comparison
 
-## 📥 How to use the tool:
+A browser-based tool that helps you see who is not following you back on Instagram using the data archive you can request from Instagram.
 
-1. Log in to your Instagram account on a **computer**.
-2. Request your Instagram data by following this guide: [Access and download your information on Instagram](https://help.instagram.com/181231772500920).
-   
-   **Important:** _Make sure you set data format to JSON, and date range to "All time"._
-   
-   *Data is usually available within 15 minutes, but in some cases it may take longer.*
-4. Once downloaded, unzip the archive and navigate to the folder called `followers_and_following`.
-5. Locate the files named `following.json` and `followers_1.json`.
-6. Upload both of these files into the tool and click **"Check"**.  
-   You will then see a list of users you follow who don't follow you back.
+## How to use the tool
 
-> ⚠️ This tool works best on desktop devices. It may also work on mobile devices that support file download and upload (most modern smartphones).
+1. Log in to Instagram on a computer.
+2. Request your data by following the official guide: [Access and download your information on Instagram](https://help.instagram.com/181231772500920).
+3. Choose **JSON** as the format and **All time** as the date range when generating the archive.
+4. After downloading the archive you have two options:
+   - **Upload the ZIP archive** directly. The app reads the required `following.json` and all `followers_*.json` files automatically.
+   - **Upload the JSON files manually.** Extract the archive, navigate to `connections/followers_and_following`, then select `following.json` and every `followers_*.json` file.
+5. Click **Check** to compare the lists. The result shows every account you follow that does not follow you back.
 
----
+> Processing happens entirely in your browser. No data is uploaded to a server.
 
-**🔍 Demo:**  
-https://srv.app/tools/Instagram-Unfollow-Checker/
+## Live demo
+https://srv.app/tools/Instagram-Follower-Comparison/

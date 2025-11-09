@@ -1,249 +1,464 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<title>Instagram Unfollow Checker</title>
-	<style>
-	       body {
-	       	font-family: Arial, sans-serif;
-	       	background-color: #f4f4f4;
-	       	margin: 0;
-	       	padding: 0;
-	       	display: flex;
-	       	flex-direction: column;
-	       	align-items: center;
-	       	justify-content: center;
-	       	height: 100vh;
-	       }
-	       h1 {
-	       	text-align: center;
-	       }
-	       .upload-container {
-	       	text-align: center;
-	       	margin-bottom: 20px;
-	       }
-	       label {
-	       	display: block;
-	       	margin: 5px 0;
-	       }
-	       input[type="file"] {
-	       	display: block;
-	       	margin: 5px auto;
-	       }
-	       button {
-	       	display: inline-block;
-	       	margin: 10px 5px;
-	       	padding: 10px;
-	       	background-color: #4CAF50;
-	       	color: white;
-	       	border: none;
-	       	cursor: pointer;
-	       }
-	       button:hover {
-	       	background-color: #45a049;
-	       }
-	       #info-button {
-	       	display: inline-block;
-	       	margin-left: 10px;
-	       }
-	       .modal {
-	       	display: none;
-	       	position: fixed;
-	       	top: 0;
-	       	left: 0;
-	       	width: 100%;
-	       	height: 100%;
-	       	background-color: rgba(0, 0, 0, 0.7);
-	       	z-index: 1;
-	       }
-	       .modal-content {
-	       	background-color: #fff;
-	       	position: absolute;
-	       	top: 50%;
-	       	left: 50%;
-	       	transform: translate(-50%, -50%);
-	       	padding: 20px;
-	       	text-align: left;
-	       	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-	       }
-	       .close {
-	       	position: absolute;
-	       	top: 10px;
-	       	right: 10px;
-	       	font-size: 20px;
-	       	cursor: pointer;
-	       }
-	       #result-container {
-	       	margin-top: 20px;
-	       	text-align: center;
-	       	max-height: 300px;
-	       	overflow-y: auto;
-	       }
-	       #result {
-	       	text-align: left;
-	       }
-	       ul {
-	       	list-style-type: none;
-	       	padding: 0;
-	       }
-	       li {
-	       	margin: 5px 0;
-	       }
-	       a {
-	       	color: #007BFF;
-	       	text-decoration: none;
-	       }
-	       #result-message {
-	       	font-weight: bold;
-	       	margin-bottom: 10px;
-	       }
-	       #footer {
-	       	margin-top: 20px;
-	       	text-align: center;
-	       }
-	       #footer a {
-	       	color: #007BFF;
-	       	text-decoration: none;
-	       }
-	</style>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Instagram Follower Comparison</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
-<body>
-	<h1>Instagram Unfollow Checker</h1>
-	<div class="upload-container">
-		<label for="followingFile">Upload Following JSON:</label> <input accept=".json" id="followingFile" type="file"><br>
-		<br>
-		<label for="followersFile">Upload Followers JSON:</label> <input accept=".json" id="followersFile" type="file"><br>
-		<br>
-		<button onclick="checkFollowers()">Check</button> <button id="info-button" onclick="showInfo()">?</button>
-	</div>
-	<div id="result-container">
-		<p id="result-message"></p>
-		<div id="result"></div>
-	</div>
-	<div id="footer">
-		<p>Created by Phumix, this project is <a href="https://github.com/Phumix/Instagram-Unfollow-Checker" target="_blank">open source on GitHub</a>.</p>
-	</div>
-	
-<div id="info-modal" class="modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeInfo()">&times;</span>
-        <h2>Instagram Unfollow Checker</h2>
-        <p>This tool helps you find out who is not following you back on Instagram. To use this tool, you need to download your data archive as JSON from Instagram. To get the required JSON data, follow these steps:</p>
-        <ol>
-            <li>Log in to your Instagram account on a computer.</li>
-            <li>Download your Instagram data by following this guide: <a href="https://help.instagram.com/181231772500920" target="_blank">Download Instagram Data</a>. <small>(This usually takes up to 15 minutes, but sometimes up to 30 days.)</small></li>
-            <li>Unzip the downloaded data and navigate to the "followers_and_following" folder.</li>
-            <li>Locate the "following.json" and "followers_1.json" files.</li>
-        </ol>
-        <p>Upload your JSON data files, click "Check," and we'll show you a list of users who are not following you back.</p>
-		<small>This tool may only be compatible with desktop/mac as you need to download data, unzip and upload again.</small>
+<body class="bg-light">
+    <main class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <h1 class="text-center mb-4">Instagram Follower Comparison</h1>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <p class="fw-semibold mb-2">Choose data source</p>
+                            <div class="form-check">
+                                <input checked class="form-check-input" id="sourceJson" name="dataSource" type="radio" value="json">
+                                <label class="form-check-label" for="sourceJson">Upload JSON files</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" id="sourceZip" name="dataSource" type="radio" value="zip">
+                                <label class="form-check-label" for="sourceZip">Upload Instagram ZIP archive</label>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="json-inputs">
+                            <label class="form-label" for="followingFile">Following JSON</label>
+                            <input accept=".json" class="form-control" id="followingFile" type="file">
+                            <label class="form-label mt-3" for="followersFile">Followers JSON</label>
+                            <input accept=".json" class="form-control" id="followersFile" multiple type="file">
+                        </div>
+                        <div class="mb-3 d-none" id="zip-input">
+                            <label class="form-label" for="archiveFile">Instagram data ZIP</label>
+                            <input accept=".zip" class="form-control" id="archiveFile" type="file">
+                            <div class="form-text">The ZIP should contain <code>connections/followers_and_following/following.json</code> and one or more <code>followers_*.json</code> files.</div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-primary" type="button" onclick="checkFollowers()">Check</button>
+                            <button class="btn btn-outline-secondary" type="button" onclick="showInfo()">How it works</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="alert d-none mb-4" id="status" role="alert"></div>
+                <div class="card d-none shadow-sm" id="result-card">
+                    <div class="card-body">
+                        <h2 class="h5" id="result-message"></h2>
+                        <div id="result"></div>
+                    </div>
+                </div>
+                <p class="text-center text-muted mt-4">Created by Phumix — <a href="https://github.com/Phumix/Instagram-Unfollow-Checker" target="_blank" rel="noopener noreferrer">open source</a> under the MIT License.</p>
+            </div>
+        </div>
+    </main>
+
+    <div aria-hidden="true" aria-labelledby="infoModalLabel" class="modal fade" id="info-modal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="infoModalLabel">Instagram Unfollow Checker</h1>
+                    <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+                </div>
+                <div class="modal-body">
+                    <p>This tool compares who you follow with who follows you back on Instagram. Start by downloading your Instagram data archive, then upload the files here.</p>
+                    <ol class="mb-3">
+                        <li>Log in to Instagram on a computer and request your data: <a href="https://help.instagram.com/181231772500920" target="_blank" rel="noopener noreferrer">Access and download your information</a>.</li>
+                        <li>Select JSON as the format and "All time" for the date range.</li>
+                        <li>Once you receive the archive, either upload the ZIP file directly or extract <code>following.json</code> and every <code>followers_*.json</code> file from <code>connections/followers_and_following</code>.</li>
+                        <li>Click <strong>Check</strong> to list accounts you follow that do not follow you back.</li>
+                    </ol>
+                    <p class="mb-0">Processing happens entirely in your browser, and no data leaves your device.</p>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
+    <script crossorigin="anonymous" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script>
+        let infoModalInstance = null;
 
+        document.addEventListener('DOMContentLoaded', () => {
+            updateInputVisibility();
+            document.querySelectorAll('input[name="dataSource"]').forEach(radio => {
+                radio.addEventListener('change', updateInputVisibility);
+            });
 
-	<script>
-		function checkFollowers() {
-			const followingFileInput = document.getElementById('followingFile');
-			const followersFileInput = document.getElementById('followersFile');
+            const modalElement = document.getElementById('info-modal');
+            if (modalElement && typeof bootstrap !== 'undefined') {
+                infoModalInstance = new bootstrap.Modal(modalElement);
+            }
+        });
 
-			const followingFile = followingFileInput.files[0];
-			const followersFile = followersFileInput.files[0];
+        async function checkFollowers() {
+            clearFeedback();
 
-			if (!followingFile || !followersFile) {
-				displayError('Please upload both JSON files.');
-				return;
-			}
+            try {
+                showStatus('Processing data...', 'info');
+                const source = getSelectedSource();
+                let followingEntries;
+                let followersEntries;
 
-			const reader = new FileReader();
+                if (source === 'json') {
+                    const followingFile = document.getElementById('followingFile').files[0];
+                    const followersInput = document.getElementById('followersFile');
+                    const followerFiles = followersInput ? Array.from(followersInput.files || []) : [];
 
-			reader.onload = function() {
-				try {
-					const followingData = JSON.parse(reader.result);
+                    if (!followingFile || followerFiles.length === 0) {
+                        throw new Error('Upload following.json and at least one followers_*.json file.');
+                    }
 
-					if (!followingData || !followingData.relationships_following) {
-						throw new Error('Invalid JSON structure for following.json. Make sure it is the correct file from your Instagram Data Collection.');
-					}
+                    const followingData = await parseJSONFile(followingFile, 'following.json');
+                    followingEntries = getRelationshipEntries(followingData, 'following', 'following.json');
 
-					const reader2 = new FileReader();
-					reader2.onload = function() {
-						try {
-							const followersData = JSON.parse(reader2.result);
+                    followersEntries = [];
+                    for (const file of followerFiles) {
+                        const data = await parseJSONFile(file, file.name || 'followers.json');
+                        const normalized = getRelationshipEntries(data, 'followers', file.name || 'followers.json');
+                        followersEntries.push(...normalized);
+                    }
+                } else {
+                    const archiveFile = document.getElementById('archiveFile').files[0];
+                    if (!archiveFile) {
+                        throw new Error('Select the Instagram ZIP archive.');
+                    }
 
-							if (!Array.isArray(followersData)) {
-								throw new Error('Invalid JSON structure for followers.json. Make sure it is the correct file from your Instagram Data Collection.');
-							}
+                    ({ followingEntries, followersEntries } = await parseArchiveFile(archiveFile));
+                }
 
-							const followingHrefs = followingData.relationships_following.map(item => item.string_list_data[0].href);
-							const followersHrefs = followersData.map(item => item.string_list_data[0].href);
+                if (!followingEntries.length) {
+                    throw new Error('No following users found in the provided data.');
+                }
 
-							const notFollowingBack = followingHrefs.filter(href => !followersHrefs.includes(href));
+                if (!followersEntries.length) {
+                    throw new Error('No followers found in the provided data.');
+                }
 
-							const resultMessage = document.getElementById('result-message');
-							if (resultMessage) {
-								resultMessage.textContent = `A total of ${notFollowingBack.length} is not following you back:`;
-								resultMessage.style.display = 'block';
-							}
+                const followingHandles = extractHandlesFromEntries(followingEntries);
+                const followerHandles = extractHandlesFromEntries(followersEntries);
 
-							displayResults(notFollowingBack);
-						} catch (error) {
-							displayError(error.message);
-						}
-					};
-					reader2.readAsText(followersFile);
-				} catch (error) {
-					displayError(error.message);
-				}
-			};
-			reader.readAsText(followingFile);
-		}
+                const followerSet = new Set(followerHandles);
+                const uniqueFollowing = Array.from(new Set(followingHandles));
+                const notFollowingBack = uniqueFollowing
+                    .filter(handle => !followerSet.has(handle))
+                    .sort((a, b) => a.localeCompare(b));
 
-		function displayError(message) {
-			const resultDiv = document.getElementById('result');
-			resultDiv.innerHTML = '';
-			const errorMessage = document.createElement('p');
-			errorMessage.textContent = message;
-			resultDiv.appendChild(errorMessage);
-		}
+                displayResults(notFollowingBack);
+                showStatus('Comparison complete.', 'success');
+            } catch (error) {
+                displayError(error.message || 'An unexpected error occurred.');
+            }
+        }
 
-		function displayResults(users) {
-			const resultDiv = document.getElementById('result');
-			resultDiv.innerHTML = '';
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            if (!status) {
+                return;
+            }
+            status.textContent = message;
+            status.className = `alert alert-${type} mb-4`;
+        }
 
-			if (users.length === 0) {
-				const message = document.createElement('p');
-				message.textContent = 'Everyone is following you back.';
-				resultDiv.appendChild(message);
-			} else {
-				const ul = document.createElement('ul');
-				users.forEach(user => {
-					const username = user.replace('https://www.instagram.com/', '');
-					const li = document.createElement('li');
-					const a = document.createElement('a');
-					a.href = user;
-					a.textContent = username;
-					li.appendChild(a);
-					ul.appendChild(li);
-				});
-				resultDiv.appendChild(ul);
-			}
-		}
+        function hideStatus() {
+            const status = document.getElementById('status');
+            if (!status) {
+                return;
+            }
+            status.textContent = '';
+            status.className = 'alert d-none mb-4';
+        }
 
-		function showInfo() {
-			const modal = document.getElementById('info-modal');
-			modal.style.display = 'block';
-		}
+        function getSelectedSource() {
+            const checked = document.querySelector('input[name="dataSource"]:checked');
+            return checked ? checked.value : 'json';
+        }
 
-		function closeInfo() {
-			const modal = document.getElementById('info-modal');
-			modal.style.display = 'none';
-		}
+        function updateInputVisibility() {
+            const isJson = getSelectedSource() === 'json';
+            document.getElementById('json-inputs').classList.toggle('d-none', !isJson);
+            document.getElementById('zip-input').classList.toggle('d-none', isJson);
+        }
 
-		window.onclick = function(event) {
-			const modal = document.getElementById('info-modal');
-			if (event.target === modal) {
-				modal.style.display = 'none';
-			}
-		}
-	</script>
+        function clearFeedback() {
+            hideStatus();
+            hideResults();
+        }
+
+        function hideResults() {
+            const card = document.getElementById('result-card');
+            const resultMessage = document.getElementById('result-message');
+            const resultContainer = document.getElementById('result');
+
+            if (card) {
+                card.classList.add('d-none');
+            }
+            if (resultMessage) {
+                resultMessage.textContent = '';
+            }
+            if (resultContainer) {
+                resultContainer.innerHTML = '';
+            }
+        }
+
+        function displayError(message) {
+            hideResults();
+            showStatus(message, 'danger');
+        }
+
+        function displayResults(users) {
+            const card = document.getElementById('result-card');
+            const resultMessage = document.getElementById('result-message');
+            const resultContainer = document.getElementById('result');
+
+            if (!card || !resultMessage || !resultContainer) {
+                return;
+            }
+
+            card.classList.remove('d-none');
+            resultContainer.innerHTML = '';
+
+            if (users.length === 0) {
+                resultMessage.textContent = 'Everyone is following you back.';
+                const paragraph = document.createElement('p');
+                paragraph.className = 'mb-0 text-success';
+                paragraph.textContent = 'No unfollowers found.';
+                resultContainer.appendChild(paragraph);
+                return;
+            }
+
+            resultMessage.textContent = `A total of ${users.length} account(s) are not following you back:`;
+            const list = document.createElement('ul');
+            list.className = 'list-group list-group-flush';
+
+            users.forEach(handle => {
+                const item = document.createElement('li');
+                item.className = 'list-group-item';
+                const link = document.createElement('a');
+                link.href = `https://www.instagram.com/${handle}/`;
+                link.textContent = handle;
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                item.appendChild(link);
+                list.appendChild(item);
+            });
+
+            resultContainer.appendChild(list);
+        }
+
+        async function parseJSONFile(file, contextName) {
+            const context = contextName || file.name || 'JSON file';
+            let text;
+            try {
+                text = await readFileAsText(file);
+            } catch (error) {
+                throw new Error(`Unable to read ${context}: ${error.message}`);
+            }
+
+            return parseJSONText(text, context);
+        }
+
+        async function parseArchiveFile(file) {
+            if (typeof JSZip === 'undefined') {
+                throw new Error('ZIP support failed to load. Refresh the page and try again.');
+            }
+
+            const buffer = await readFileAsArrayBuffer(file);
+            let zip;
+            try {
+                zip = await JSZip.loadAsync(buffer);
+            } catch (error) {
+                throw new Error('Unable to open the ZIP archive. Make sure you selected the original Instagram download.');
+            }
+
+            const followingEntry = findZipEntry(zip, 'connections/followers_and_following/following.json');
+            const followerEntries = findFollowerEntries(zip);
+
+            if (!followingEntry || followerEntries.length === 0) {
+                throw new Error('Required files not found in the archive. Expected following.json and at least one followers_*.json in connections/followers_and_following.');
+            }
+
+            const followingText = await followingEntry.async('string');
+            const followingData = parseJSONText(followingText, 'following.json in archive');
+            const followingEntries = getRelationshipEntries(followingData, 'following', 'following.json in archive');
+
+            const followersEntries = [];
+            for (const entry of followerEntries) {
+                const text = await entry.async('string');
+                const context = `${entry.name} in archive`;
+                const data = parseJSONText(text, context);
+                const normalized = getRelationshipEntries(data, 'followers', context);
+                followersEntries.push(...normalized);
+            }
+
+            return { followingEntries, followersEntries };
+        }
+
+        function findZipEntry(zip, expectedPath) {
+            const lowerExpected = expectedPath.toLowerCase();
+            for (const path of Object.keys(zip.files)) {
+                const entry = zip.files[path];
+                if (entry.dir) {
+                    continue;
+                }
+                if (path.toLowerCase().endsWith(lowerExpected)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+
+        function findFollowerEntries(zip) {
+            const followersPattern = /connections\/followers_and_following\/followers_(\d+)\.json$/i;
+            const matches = [];
+
+            for (const path of Object.keys(zip.files)) {
+                const entry = zip.files[path];
+                if (entry.dir) {
+                    continue;
+                }
+                const match = path.match(followersPattern);
+                if (match) {
+                    matches.push({ entry, index: parseInt(match[1], 10) });
+                }
+            }
+
+            if (matches.length > 0) {
+                matches.sort((a, b) => a.index - b.index);
+                return matches.map(item => item.entry);
+            }
+
+            const fallback = findZipEntry(zip, 'connections/followers_and_following/followers.json');
+            return fallback ? [fallback] : [];
+        }
+
+        function parseJSONText(text, contextName) {
+            const normalized = text.replace(/^\uFEFF/, '');
+            let parsed;
+            try {
+                parsed = JSON.parse(normalized);
+            } catch (error) {
+                throw new Error(`Invalid JSON structure for ${contextName}. ${error.message}`);
+            }
+            return parsed;
+        }
+
+        async function readFileAsText(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('Unable to read file.'));
+                reader.readAsText(file);
+            });
+        }
+
+        async function readFileAsArrayBuffer(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('Unable to read file.'));
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function getRelationshipEntries(data, type, contextName) {
+            if (!data) {
+                throw new Error(`Invalid JSON structure for ${contextName}.`);
+            }
+
+            if (Array.isArray(data)) {
+                return data;
+            }
+
+            const keyOrder = type === 'following'
+                ? ['relationships_following', 'following']
+                : ['relationships_followers', 'followers', 'relationships_following_you'];
+
+            for (const key of keyOrder) {
+                if (Array.isArray(data[key])) {
+                    return data[key];
+                }
+            }
+
+            if (Array.isArray(data.string_list_data)) {
+                return data.string_list_data;
+            }
+
+            throw new Error(`Invalid JSON structure for ${contextName}. Make sure it is the correct file from your Instagram Data Collection.`);
+        }
+
+        function extractHandlesFromEntries(entries) {
+            return entries
+                .map(entry => extractHandle(entry))
+                .filter(Boolean);
+        }
+
+        function extractHandle(item) {
+            if (!item) {
+                return null;
+            }
+
+            if (Array.isArray(item.string_list_data) && item.string_list_data.length > 0) {
+                const firstEntry = item.string_list_data[0];
+                if (firstEntry) {
+                    const handleFromHref = typeof firstEntry.href === 'string'
+                        ? normalizeInstagramHandle(firstEntry.href)
+                        : null;
+                    if (handleFromHref) {
+                        return handleFromHref;
+                    }
+                    if (typeof firstEntry.value === 'string' && firstEntry.value.trim()) {
+                        return firstEntry.value.trim().toLowerCase();
+                    }
+                }
+            }
+
+            if (typeof item.href === 'string') {
+                const handle = normalizeInstagramHandle(item.href);
+                if (handle) {
+                    return handle;
+                }
+            }
+
+            if (typeof item.value === 'string' && item.value.trim()) {
+                return item.value.trim().toLowerCase();
+            }
+
+            if (typeof item.title === 'string' && item.title.trim()) {
+                return item.title.trim().toLowerCase();
+            }
+
+            return null;
+        }
+
+        function normalizeInstagramHandle(url) {
+            try {
+                const normalized = new URL(url, 'https://www.instagram.com');
+                const trimmedPath = normalized.pathname.replace(/^\/+|\/+$/g, '');
+                if (!trimmedPath) {
+                    return null;
+                }
+
+                const segments = trimmedPath.split('/').filter(Boolean);
+                if (segments.length === 0) {
+                    return null;
+                }
+
+                if (segments[0] === '_u' && segments[1]) {
+                    return segments[1].toLowerCase();
+                }
+
+                return segments[segments.length - 1].toLowerCase();
+            } catch (error) {
+                return null;
+            }
+        }
+
+        function showInfo() {
+            if (infoModalInstance) {
+                infoModalInstance.show();
+            }
+        }
+    </script>
 </body>
 </html>

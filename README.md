@@ -15,4 +15,4 @@ A browser-based tool that helps you see who is not following you back on Instagr
 > Processing happens entirely in your browser. No data is uploaded to a server.
 
 ## Live demo
-https://srv.app/tools/Instagram-Follower-Comparison/
+https://phumix.com/tools/Instagram-Follower-Comparison/
